@@ -14,7 +14,6 @@ const OrderForm = ({ form, onApprove, approval }) => {
     errorMessage: nameErrorMessage,
     inputValueChangeHandler: inputNameChangeHandler,
     inputBlurHandler: inputNameBlurHandler,
-    reset: nameReset,
   } = useInput((val) => val.trim() !== "", "Name must not be empty!");
   const {
     enterdedValue: enteredStreetValue,
@@ -23,7 +22,6 @@ const OrderForm = ({ form, onApprove, approval }) => {
     errorMessage: streetErrorMessage,
     inputValueChangeHandler: inputStreetChangeHandler,
     inputBlurHandler: inputStreetBlurHandler,
-    reset: streetReset,
   } = useInput((val) => val.trim() !== "", "Street must not be empty!");
   const {
     enterdedValue: enteredCodeValue,
@@ -32,8 +30,10 @@ const OrderForm = ({ form, onApprove, approval }) => {
     errorMessage: codeErrorMessage,
     inputValueChangeHandler: inputCodeChangeHandler,
     inputBlurHandler: inputCodeBlurHandler,
-    reset: codeReset,
-  } = useInput((val) => val.trim() !== "", "Please enter a vaild postal code!");
+  } = useInput(
+    (val) => val.trim().length >= 5,
+    "Please enter a vaild postal code!"
+  );
   const {
     enterdedValue: enteredCityValue,
     enterdedValueIsValid: enteredCityIsValid,
@@ -41,7 +41,6 @@ const OrderForm = ({ form, onApprove, approval }) => {
     errorMessage: cityErrorMessage,
     inputValueChangeHandler: inputCityChangeHandler,
     inputBlurHandler: inputCityBlurHandler,
-    reset: cityReset,
   } = useInput((val) => val.trim() !== "", "City must not be empty!");
 
   const formIsValid =
@@ -71,12 +70,8 @@ const OrderForm = ({ form, onApprove, approval }) => {
         },
       }
     );
-    cartCtx.reset();
     onApprove();
-    nameReset();
-    streetReset();
-    codeReset();
-    cityReset();
+    cartCtx.reset();
   };
   return !approval ? (
     <form onSubmit={formSubmissionHandler}>
@@ -126,9 +121,6 @@ const OrderForm = ({ form, onApprove, approval }) => {
         {cityHasError && <p className="error-text">{cityErrorMessage}</p>}
       </div>
 
-      {/* <div className="form-actions">
-        <button disabled={!formIsValid}>Submit</button>
-      </div> */}
       <div className={btnStyles.actions}>
         <button
           className={btnStyles["button--alt"]}
@@ -152,7 +144,7 @@ const OrderForm = ({ form, onApprove, approval }) => {
       <p>Your request was sent successfully.</p>
       <div className={btnStyles.actions}>
         <button
-          className={btnStyles["button--alt"]}
+          className={btnStyles["button"]}
           onClick={modalCtx.closeModalHandler}
         >
           Close

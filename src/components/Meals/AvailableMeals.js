@@ -5,15 +5,15 @@ import Card from "../UI/Card/Card";
 
 const AvailableMeals = ({ onOrderMeal }) => {
   const [meals, setMeals] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   useEffect(() => {
     const fetchMeals = async () => {
       try {
-        setIsLoading(true);
         const response = await fetch(
           "https://react-http-a0e9b-default-rtdb.firebaseio.com/meals.json"
         );
+        if (!response.ok) throw new Error(`Something went wrong!.`);
         const data = await response.json();
         if (!data) throw new Error(`invalid URL! No meals found.`);
         setMeals(data.data);
@@ -24,14 +24,22 @@ const AvailableMeals = ({ onOrderMeal }) => {
     };
     fetchMeals();
   }, []);
-  let mealsList = null;
-  if (meals.length > 0)
-    mealsList = meals.map((meal) => (
-      <MealItem key={meal.id} meal={meal} onOrderMeal={onOrderMeal} />
-    ));
+  const mealsList = meals.map((meal) => (
+    <MealItem key={meal.id} meal={meal} onOrderMeal={onOrderMeal} />
+  ));
   return (
     <Card className={styles.meals}>
-      {isLoading ? <p>Loading...</p> : <ul>{mealsList ? mealsList : error}</ul>}
+      {isLoading ? (
+        <p className={styles.center}>Loading...</p>
+      ) : (
+        <ul>
+          {mealsList.length > 0 ? (
+            mealsList
+          ) : (
+            <p className={styles.center}>{error}</p>
+          )}
+        </ul>
+      )}
     </Card>
   );
 };
